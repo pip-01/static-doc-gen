@@ -10,4 +10,4 @@ pip install -r requirements.txt
 python build.py
 
 ## Output
-Markdown file is created in /outputs
+Markdown file is created in /outputs 
