@@ -1,2 +1,2 @@
-pyyam1
+pyyaml
 jinja2
