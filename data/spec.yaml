@@ -1,0 +1,7 @@
+id: example spec
+title: Example Specification
+
+attributes:
+     - id
+     - title
+     - status

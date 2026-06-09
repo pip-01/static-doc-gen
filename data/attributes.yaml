@@ -1,0 +1,7 @@
+attributes:
+   - name: id
+     description: Unique identifier
+   - name: title
+     description: Title of the record
+   - name: status
+     description: Status of the record

@@ -1,0 +1,55 @@
+from pathlib import Path
+import yaml
+from jinja2 import Environment, FileSystemLoader
+
+# Paths
+ROOT = Path(__file__).parent
+DATA_DIR = ROOT / "data"
+TEMPLATE_DIR = ROOT / "templates"
+OUTPUT_DIR = ROOT / "outputs"
+
+ATTRIBUTES_FILE = DATA_DIR / "attributes.yaml"
+SPEC_FILE = DATA_DIR / "spec.yaml"
+
+def load_yaml(path):
+	with open(path, "r", encoding="utf-8") as f:
+		return yaml.safe_load(f)
+
+def build():
+	OUTPUT_DIR.mkdir(exist_ok=True)
+
+	# Load data
+	attributes_data = load_yaml(ATTRIBUTES_FILE)
+	spec = load_yaml(SPEC_FILE)
+
+	# Build lookup
+	attribute_lookup = {
+		attr["name"]: attr
+		for attr in attributes_data["attributes"]
+	}
+
+	# Resolve attributes
+		resolved_attributes = [
+			attribute_lookup[name]
+			for name in spec.get("attributes", [])
+	]
+
+	# Setup template
+	env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
+	template = env.get_template("spec.md.j2")
+
+	# Render
+	output = template.render(
+		id=spec["id"],
+		title=spec["title"],
+		attributes=resolved_attributes
+	)
+
+	# Write file
+	output_path = OUTPUT_DIR / f"{spec['id']}.md"
+	output_path.write_text(output, encoding="utf-8")
+
+	print(f"Built: {output_path}")
+
+	if __name__ == "__main__":
+		build()
